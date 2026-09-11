@@ -35,12 +35,12 @@ def predict(network, x):
 
 x, t = get_data()
 network = init_network()
-
+batch = 100
 accuracy_cnt = 0
-for i in range(len(x)):
-    y = predict(network, x[i])
-    p = np.argmax(y) # 확률이 가장 높은 확률의 인덱스
-    if p==t[i]: 
-        accuracy_cnt += 1
+for i in range(0, len(x), batch):
+    x = x[i:i+batch]
+    y = predict(network, x)
+    p = np.argmax(y, axis=1) # 각 행마다 가장 확률이 높은 인덱스 (axis=0(기본값)은 각 열마다 가장 확률이 높은 인덱스)
+    accuracy_cnt += np.sum(p==t[i:i+batch]) # bool 형 배열 생성, np.sum()을 실행하면 True만 모두 더함
 
 print("Accuracy:"+str(float(accuracy_cnt)/len(x)))
